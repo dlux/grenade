@@ -4,8 +4,8 @@
 #unset HOST_IP
 HOST_IP=10.0.0.208
 
-DEST=@BASE_RELEASE_DIR@
-DATA_DIR=@DATA_DIR@
+DEST=/opt/stack/newton
+DATA_DIR=/opt/stack/data
 SWIFT_DATA_DIR=${DATA_DIR}/swift
 
 # Timeouts
@@ -14,31 +14,25 @@ ASSOCIATE_TIMEOUT=60
 BOOT_TIMEOUT=120
 SERVICE_TIMEOUT=120
 
-dlux=secure123
-ADMIN_PASSWORD=${dlux}
-API_RATE_LIMIT=False
+ADMIN_PASSWORD=0penstack
+#API_RATE_LIMIT=False
 LOGDAYS=1
 LOGFILE=$DEST/logs/stack.sh.log
-MYSQL_PASSWORD=${dlux}
+DATABASE_PASSWORD=superstack
 RABBIT_HOST=localhost
-RABBIT_PASSWORD=${dlux}
+RABBIT_PASSWORD=superstack
 SCREEN_LOGDIR=$DEST/logs/screen
 SCREEN_NAME=${SCREEN_NAME:-stack}
 SERVICE_PASSWORD=$ADMIN_PASSWORD
 SERVICE_TOKEN=cd0d1a03-b701-4fcb-801a-8b4d0bc3d06e
-STACK_LOG=stack.sh.log
+#STACK_LOG=stack.sh.log
 VOLUME_BACKING_FILE_SIZE=10000M
 
+# Swift configuration
 enable_service s-account s-container s-object s-proxy
 SWIFT_HASH=8213897fads879789asdf789
 SWIFT_REPLICAS=1
 
-# Neutron
-disable_service n-net
-enable_service q-svc
-enable_service q-agt
-enable_service q-dhcp
-enable_service q-l3
-enable_service q-meta
-enable_service neutron
-
+# Changing default IPV4
+FIXED_RANGE="192.168.20.0/25"
+IPV4_ADDRS_SAFE_TO_USE="192.168.20.0/25"
