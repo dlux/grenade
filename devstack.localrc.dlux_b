@@ -1,38 +1,9 @@
-# localrc for DevStack base installation
+# devstack.localrc
 
-# Default to selecting an interface via the default route
-#unset HOST_IP
-HOST_IP=10.0.0.208
+Q_USE_DEBUG_COMMAND=True
+NETWORK_GATEWAY=192.168.0.1
+FIXED_RANGE=192.168.0.0/20
+FLOATING_RANGE=172.24.5.0/24
+PUBLIC_NETWORK_GATEWAY=172.24.5.1
 
-DEST=/opt/stack/newton
-DATA_DIR=/opt/stack/data
-SWIFT_DATA_DIR=${DATA_DIR}/swift
-
-# Timeouts
-ACTIVE_TIMEOUT=120
-ASSOCIATE_TIMEOUT=60
-BOOT_TIMEOUT=120
-SERVICE_TIMEOUT=120
-
-ADMIN_PASSWORD=0penstack
-#API_RATE_LIMIT=False
-LOGDAYS=1
-LOGFILE=$DEST/logs/stack.sh.log
-DATABASE_PASSWORD=superstack
-RABBIT_HOST=localhost
-RABBIT_PASSWORD=superstack
-SCREEN_LOGDIR=$DEST/logs/screen
-SCREEN_NAME=${SCREEN_NAME:-stack}
-SERVICE_PASSWORD=$ADMIN_PASSWORD
-SERVICE_TOKEN=cd0d1a03-b701-4fcb-801a-8b4d0bc3d06e
-#STACK_LOG=stack.sh.log
-VOLUME_BACKING_FILE_SIZE=10000M
-
-# Swift configuration
-enable_service s-account s-container s-object s-proxy
-SWIFT_HASH=8213897fads879789asdf789
-SWIFT_REPLICAS=1
-
-# Changing default IPV4
-FIXED_RANGE="192.168.20.0/25"
-IPV4_ADDRS_SAFE_TO_USE="192.168.20.0/25"
+USE_SCREEN=False
