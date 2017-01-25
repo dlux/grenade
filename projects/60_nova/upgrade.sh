@@ -60,7 +60,6 @@ stack_install_service nova
 upgrade_project nova $RUN_DIR $BASE_DEVSTACK_BRANCH $TARGET_DEVSTACK_BRANCH
 
 # Simulate init_nova()
-create_nova_cache_dir
 create_nova_keys_dir
 
 # Migrate the database
@@ -76,6 +75,7 @@ fi
 
 # Setup cellsv2 records, if necessary.
 if [ "$NOVA_CONFIGURE_CELLSV2" == "True" ]; then
+    ($NOVA_BIN_DIR/nova-manage cell_v2 map_cell0 --database_connection $(database_connection_url nova_cell0) || true)
     $NOVA_BIN_DIR/nova-manage cell_v2 simple_cell_setup --transport-url $(get_transport_url)
 fi
 
