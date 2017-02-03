@@ -50,13 +50,14 @@ function register_db_to_save {
 }
 
 # Upgrade a service listed in $UPGRADE_PROJECTS.
+# dlux Call Upgrade scripts (At these point DB was created, all services stopped, etc.)
 function upgrade_service {
     local local_service=$1
     local plugin_dir=${PLUGIN_DIR[$local_service]}
     if [[ -n "$plugin_dir" ]]; then
         echo_summary "Upgrading $local_service..."
         TOP_DIR=$TARGET_DEVSTACK_DIR $plugin_dir/upgrade.sh || die $LINENO "Failure in $plugin_dir/upgrade.sh"
-    else
+    else # Only tempest
         echo_summary "Upgrading $local_service... (legacy mode)"
         $GRENADE_DIR/upgrade-$local_service || die $LINENO "Failure in upgrade-$local_service"
     fi
