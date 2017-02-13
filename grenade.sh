@@ -195,6 +195,9 @@ source $TARGET_DEVSTACK_DIR/inc/meta-config
 # Oh the complexity of bootstrapping. We need to populate enabled
 # services from what devstack-gate might have set it as.
 extract_localrc_section $BASE_DEVSTACK_DIR/local.conf \
+ # DLUX.dlux base/localrc is deleted on inc.bootstrap
+ # after copying it to local.conf.orig and
+ # ultimatelly into local.conf
                         $BASE_DEVSTACK_DIR/localrc \
                         $BASE_DEVSTACK_DIR/.localrc.auto
 
@@ -215,11 +218,15 @@ fetch_grenade_plugins
 # when the time is right.
 load_settings
 
+#dlux
+echo $UPGRADE_PROJECTS
+
 # And ensure that we setup the target localrc.auto, because stack.sh
 # isn't run there. This has to be run after load_settings because
 # plugins might change the service list during this phase.
 
 extract_localrc_section $TARGET_DEVSTACK_DIR/local.conf \
+#dlux DLUX same as previous
                         $TARGET_DEVSTACK_DIR/localrc \
                         $TARGET_DEVSTACK_DIR/.localrc.auto
 
@@ -264,6 +271,7 @@ if [[ "$RUN_BASE" == "True" ]]; then
     # ---------
 
     # Validate the install
+    # dlux why would anyone skip this one?
     if [[ "$BASE_RUN_SMOKE" == "True" ]]; then
         echo_summary "Running base smoke test"
         cd $BASE_RELEASE_DIR/tempest
@@ -287,13 +295,17 @@ if [[ "$RUN_BASE" == "True" ]]; then
     resources verify pre-upgrade
 
     # Save some stuff before we shut that whole thing down
+    # dlux why?
     echo_summary "Saving current state information"
     $GRENADE_DIR/save-state
     stop $STOP save-state 130
-
+    
+    # dlux do not turn off if rolling upgrade
     # Shut down running code
     echo_summary "Shutting down all services on base devstack..."
     shutdown_services
+
+    # TODO: dlux add verify persistent resources on new rolling upgrade flow
 
     # Verify the resources still exist after the shutdown
     resources verify_noapi pre-upgrade
