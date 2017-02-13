@@ -42,6 +42,7 @@ source $TARGET_DEVSTACK_DIR/lib/tls
 source $TARGET_DEVSTACK_DIR/lib/apache
 source $TARGET_DEVSTACK_DIR/lib/nova
 source $TARGET_DEVSTACK_DIR/lib/rpc_backend
+source $TARGET_DEVSTACK_DIR/lib/placement
 
 # Print the commands being run so that we can see the command that triggers
 # an error.  It is also useful for following allowing as the install occurs.
@@ -82,9 +83,20 @@ fi
 # Start Nova
 start_nova_api
 start_nova
+start_placement
 
 # Don't succeed unless the services come up
-ensure_services_started nova-api nova-conductor nova-compute
+expected_runnning_services="nova-api nova-conductor placement "
+# NOTE(vsaienko) Ironic should be upgraded before nova according to requirements
+# http://docs.openstack.org/developer/ironic/deploy/upgrade-guide.html#general-upgrades-all-versions
+# using reverse order will lead to nova-compute start failure.
+# Ironic will restart n-cpu after its upgrade.
+# TODO(vsaienko) remove this once grenade allows to setup dependency between grenade plugin and
+# core services: https://bugs.launchpad.net/grenade/+bug/1660646
+if ! is_service_enabled ironic; then
+    expected_runnning_services+=' nova-compute'
+fi
+ensure_services_started $expected_runnning_services
 ensure_logs_exist n-api n-cond n-cpu
 
 if [[ "$FORCE_ONLINE_MIGRATIONS" == "True" ]]; then
